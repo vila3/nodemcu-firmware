@@ -26,6 +26,8 @@ static struct ip_addr broadcast_dhcps;
 static struct ip_addr server_address;
 static struct ip_addr client_address;//added
 
+static struct ip_addr dns_address;
+
 static struct dhcps_lease dhcps_lease;
 //static bool dhcps_lease_flag = true;
 static list_node *plist = NULL;
@@ -142,31 +144,31 @@ static uint8_t* ICACHE_FLASH_ATTR add_offer_options(uint8_t *optptr)
         *optptr++ = DHCP_OPTION_SUBNET_MASK;
         *optptr++ = 4;  //length
         *optptr++ = 255;
-        *optptr++ = 240;	
+        *optptr++ = 240;
         *optptr++ = 0;
         *optptr++ = 0;
 #else
         *optptr++ = DHCP_OPTION_SUBNET_MASK;
-        *optptr++ = 4;  
+        *optptr++ = 4;
         *optptr++ = 255;
-        *optptr++ = 255;	
+        *optptr++ = 255;
         *optptr++ = 255;
         *optptr++ = 0;
 #endif
 
         *optptr++ = DHCP_OPTION_LEASE_TIME;
-        *optptr++ = 4;  
+        *optptr++ = 4;
         *optptr++ = ((DHCPS_LEASE_TIMER * 60) >> 24) & 0xFF;
         *optptr++ = ((DHCPS_LEASE_TIMER * 60) >> 16) & 0xFF;
         *optptr++ = ((DHCPS_LEASE_TIMER * 60) >> 8) & 0xFF;
         *optptr++ = ((DHCPS_LEASE_TIMER * 60) >> 0) & 0xFF;
 
         *optptr++ = DHCP_OPTION_SERVER_ID;
-        *optptr++ = 4;  
-        *optptr++ = ip4_addr1( &ipadd);
-        *optptr++ = ip4_addr2( &ipadd);
-        *optptr++ = ip4_addr3( &ipadd);
-        *optptr++ = ip4_addr4( &ipadd);
+        *optptr++ = 4;
+        *optptr++ = ip4_addr1( &dns_address);
+        *optptr++ = ip4_addr2( &dns_address);
+        *optptr++ = ip4_addr3( &dns_address);
+        *optptr++ = ip4_addr4( &dns_address);
 
         if (dhcps_router_enabled(offer)){
         	struct ip_info if_ip;
@@ -192,14 +194,14 @@ static uint8_t* ICACHE_FLASH_ATTR add_offer_options(uint8_t *optptr)
 
 #ifdef CLASS_B_NET
         *optptr++ = DHCP_OPTION_BROADCAST_ADDRESS;
-        *optptr++ = 4;  
+        *optptr++ = 4;
         *optptr++ = ip4_addr1( &ipadd);
         *optptr++ = 255;
         *optptr++ = 255;
         *optptr++ = 255;
 #else
         *optptr++ = DHCP_OPTION_BROADCAST_ADDRESS;
-        *optptr++ = 4;  
+        *optptr++ = 4;
         *optptr++ = ip4_addr1( &ipadd);
         *optptr++ = ip4_addr2( &ipadd);
         *optptr++ = ip4_addr3( &ipadd);
@@ -207,28 +209,28 @@ static uint8_t* ICACHE_FLASH_ATTR add_offer_options(uint8_t *optptr)
 #endif
 
         *optptr++ = DHCP_OPTION_INTERFACE_MTU;
-        *optptr++ = 2;  
+        *optptr++ = 2;
 #ifdef CLASS_B_NET
-        *optptr++ = 0x05;	
+        *optptr++ = 0x05;
         *optptr++ = 0xdc;
 #else
-        *optptr++ = 0x02;	
+        *optptr++ = 0x02;
         *optptr++ = 0x40;
 #endif
 
         *optptr++ = DHCP_OPTION_PERFORM_ROUTER_DISCOVERY;
-        *optptr++ = 1;  
-        *optptr++ = 0x00; 
+        *optptr++ = 1;
+        *optptr++ = 0x00;
 
-        *optptr++ = 43;	
-        *optptr++ = 6;	
+        *optptr++ = 43;
+        *optptr++ = 6;
 
-        *optptr++ = 0x01;	
-        *optptr++ = 4;  
+        *optptr++ = 0x01;
+        *optptr++ = 4;
         *optptr++ = 0x00;
         *optptr++ = 0x00;
         *optptr++ = 0x00;
-        *optptr++ = 0x02; 	
+        *optptr++ = 0x02;
 
         return optptr;
 }
@@ -257,11 +259,11 @@ static void ICACHE_FLASH_ATTR create_msg(struct dhcps_msg *m)
 
         m->op = DHCP_REPLY;
         m->htype = DHCP_HTYPE_ETHERNET;
-        m->hlen = 6;  
+        m->hlen = 6;
         m->hops = 0;
 //        os_memcpy((char *) xid, (char *) m->xid, sizeof(m->xid));
         m->secs = 0;
-        m->flags = htons(BOOTP_BROADCAST); 
+        m->flags = htons(BOOTP_BROADCAST);
 
         os_memcpy((char *) m->yiaddr, (char *) &client.addr, sizeof(m->yiaddr));
 
@@ -318,7 +320,7 @@ static void ICACHE_FLASH_ATTR send_offer(struct dhcps_msg *m, u16_t len)
 		os_printf("udhcp: send_offer>>p->ref = %d\n", p->ref);
 #endif
 	    if(p != NULL){
-	       
+
 #if DHCPS_DEBUG
 	        os_printf("dhcps: send_offer>>pbuf_alloc succeed\n");
 	        os_printf("dhcps: send_offer>>p->tot_len = %d\n", p->tot_len);
@@ -335,7 +337,7 @@ static void ICACHE_FLASH_ATTR send_offer(struct dhcps_msg *m, u16_t len)
 	            q = q->next;
 	        }
 	    }else{
-	        
+
 #if DHCPS_DEBUG
 	        os_printf("dhcps: send_offer>>pbuf_alloc failed\n");
 #endif
@@ -345,7 +347,7 @@ static void ICACHE_FLASH_ATTR send_offer(struct dhcps_msg *m, u16_t len)
 #if DHCPS_DEBUG
 	        os_printf("dhcps: send_offer>>udp_sendto result %x\n",SendOffer_err_t);
 #endif
-	    if(p->ref != 0){	
+	    if(p->ref != 0){
 #if DHCPS_DEBUG
 	        os_printf("udhcp: send_offer>>free pbuf\n");
 #endif
@@ -378,7 +380,7 @@ static void ICACHE_FLASH_ATTR send_nak(struct dhcps_msg *m, u16_t len)
 		os_printf("udhcp: send_nak>>p->ref = %d\n", p->ref);
 #endif
 	    if(p != NULL){
-	        
+
 #if DHCPS_DEBUG
 	        os_printf("dhcps: send_nak>>pbuf_alloc succeed\n");
 	        os_printf("dhcps: send_nak>>p->tot_len = %d\n", p->tot_len);
@@ -395,7 +397,7 @@ static void ICACHE_FLASH_ATTR send_nak(struct dhcps_msg *m, u16_t len)
 	            q = q->next;
 	        }
 	    }else{
-	        
+
 #if DHCPS_DEBUG
 	        os_printf("dhcps: send_nak>>pbuf_alloc failed\n");
 #endif
@@ -406,7 +408,7 @@ static void ICACHE_FLASH_ATTR send_nak(struct dhcps_msg *m, u16_t len)
 	        os_printf("dhcps: send_nak>>udp_sendto result %x\n",SendNak_err_t);
 #endif
  	    if(p->ref != 0){
-#if DHCPS_DEBUG			
+#if DHCPS_DEBUG
 	        os_printf("udhcp: send_nak>>free pbuf\n");
 #endif
 	        pbuf_free(p);
@@ -439,7 +441,7 @@ static void ICACHE_FLASH_ATTR send_ack(struct dhcps_msg *m, u16_t len)
 		os_printf("udhcp: send_ack>>p->ref = %d\n", p->ref);
 #endif
 	    if(p != NULL){
-	        
+
 #if DHCPS_DEBUG
 	        os_printf("dhcps: send_ack>>pbuf_alloc succeed\n");
 	        os_printf("dhcps: send_ack>>p->tot_len = %d\n", p->tot_len);
@@ -456,7 +458,7 @@ static void ICACHE_FLASH_ATTR send_ack(struct dhcps_msg *m, u16_t len)
 	            q = q->next;
 	        }
 	    }else{
-	    
+
 #if DHCPS_DEBUG
 	        os_printf("dhcps: send_ack>>pbuf_alloc failed\n");
 #endif
@@ -466,7 +468,7 @@ static void ICACHE_FLASH_ATTR send_ack(struct dhcps_msg *m, u16_t len)
 #if DHCPS_DEBUG
 	        os_printf("dhcps: send_ack>>udp_sendto result %x\n",SendAck_err_t);
 #endif
-	    
+
 	    if(p->ref != 0){
 #if DHCPS_DEBUG
 	        os_printf("udhcp: send_ack>>free pbuf\n");
@@ -536,7 +538,7 @@ static uint8_t ICACHE_FLASH_ATTR parse_options(uint8_t *optptr, sint16_t len)
         }
 
         switch (type){
-        
+
         	case DHCPDISCOVER://1
                 s.state = DHCPS_STATE_OFFER;
 #if DHCPS_DEBUG
@@ -610,10 +612,10 @@ static sint16_t ICACHE_FLASH_ATTR parse_msg(struct dhcps_msg *m, u16_t len)
  * @param port ���ʹ�UDP���Դ�����UDPͨ���˿ں�
  */
 ///////////////////////////////////////////////////////////////////////////////////
-static void ICACHE_FLASH_ATTR handle_dhcp(void *arg, 
-									struct udp_pcb *pcb, 
-									struct pbuf *p, 
-									struct ip_addr *addr, 
+static void ICACHE_FLASH_ATTR handle_dhcp(void *arg,
+									struct udp_pcb *pcb,
+									struct pbuf *p,
+									struct ip_addr *addr,
 									uint16_t port)
 {
 		struct dhcps_msg *pmsg_dhcps = NULL;
@@ -650,19 +652,19 @@ static void ICACHE_FLASH_ATTR handle_dhcp(void *arg,
 #if DHCPS_DEBUG
 	    os_printf("dhcps: handle_dhcp-> p->tot_len = %d\n", tlen);
 	    os_printf("dhcps: handle_dhcp-> p->len = %d\n", p->len);
-#endif		
+#endif
 
 	    for(i=0; i<p->len; i++){
 	        p_dhcps_msg[dhcps_msg_cnt++] = data[i];
 	    }
-		
+
 		if(p->next != NULL) {
 #if DHCPS_DEBUG
 	        os_printf("dhcps: handle_dhcp-> p->next != NULL\n");
 	        os_printf("dhcps: handle_dhcp-> p->next->tot_len = %d\n",p->next->tot_len);
 	        os_printf("dhcps: handle_dhcp-> p->next->len = %d\n",p->next->len);
 #endif
-			
+
 	        data = p->next->payload;
 	        for(i=0; i<p->next->len; i++){
 	            p_dhcps_msg[dhcps_msg_cnt++] = data[i];
@@ -675,24 +677,24 @@ static void ICACHE_FLASH_ATTR handle_dhcp(void *arg,
 #if DHCPS_DEBUG
     	os_printf("dhcps: handle_dhcp-> parse_msg(p)\n");
 #endif
-		
+
         switch(parse_msg(pmsg_dhcps, tlen - 240)) {
 
 	        case DHCPS_STATE_OFFER://1
-#if DHCPS_DEBUG            
+#if DHCPS_DEBUG
             	 os_printf("dhcps: handle_dhcp-> DHCPD_STATE_OFFER\n");
-#endif			
+#endif
 	             send_offer(pmsg_dhcps, malloc_len);
 	             break;
 	        case DHCPS_STATE_ACK://3
 #if DHCPS_DEBUG
             	 os_printf("dhcps: handle_dhcp-> DHCPD_STATE_ACK\n");
-#endif			
+#endif
 	             send_ack(pmsg_dhcps, malloc_len);
 		     wifi_softap_set_station_info(pmsg_dhcps->chaddr, &client_address.addr);
 	             break;
 	        case DHCPS_STATE_NAK://4
-#if DHCPS_DEBUG            
+#if DHCPS_DEBUG
             	 os_printf("dhcps: handle_dhcp-> DHCPD_STATE_NAK\n");
 #endif
 	             send_nak(pmsg_dhcps, malloc_len);
@@ -754,7 +756,7 @@ static void ICACHE_FLASH_ATTR wifi_softap_init_dhcps_lease(uint32 ip)
 void ICACHE_FLASH_ATTR dhcps_start(struct ip_info *info)
 {
 	struct netif * apnetif = (struct netif *)eagle_lwip_getif(0x01);
-    
+
 	if(apnetif->dhcps_pcb != NULL) {
         udp_remove(apnetif->dhcps_pcb);
     }
@@ -769,6 +771,8 @@ void ICACHE_FLASH_ATTR dhcps_start(struct ip_info *info)
 	IP4_ADDR(&broadcast_dhcps, 255, 255, 255, 255);
 
 	server_address = info->ip;
+	dns_address = server_address;
+
 	wifi_softap_init_dhcps_lease(server_address.addr);
 
 	udp_bind(pcb_dhcps, IP_ADDR_ANY, DHCPS_SERVER_PORT);
@@ -776,7 +780,7 @@ void ICACHE_FLASH_ATTR dhcps_start(struct ip_info *info)
 #if DHCPS_DEBUG
 	os_printf("dhcps:dhcps_start->udp_recv function Set a receive callback handle_dhcp for UDP_PCB pcb_dhcps\n");
 #endif
-		
+
 }
 
 void ICACHE_FLASH_ATTR dhcps_stop(void)
@@ -1022,6 +1026,11 @@ bool ICACHE_FLASH_ATTR wifi_softap_reset_dhcps_lease_time(void)
 uint32 ICACHE_FLASH_ATTR wifi_softap_get_dhcps_lease_time(void) // minute
 {
     return dhcps_lease_time;
+}
+
+void ICACHE_FLASH_ATTR dhcps_set_DNS(struct ip_addr *dns_ip)
+{
+    dns_address = *dns_ip;
 }
 
 void ICACHE_FLASH_ATTR wifi_softap_dhcps_client_leave(u8 *bssid, struct ip_addr *ip,bool force)

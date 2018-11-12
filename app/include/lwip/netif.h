@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2001-2004 Swedish Institute of Computer Science.
- * All rights reserved. 
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * 1. Redistributions of source code must retain the above copyright notice,
@@ -11,21 +11,21 @@
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission. 
+ *    derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED 
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT 
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  *
  * This file is part of the lwIP TCP/IP stack.
- * 
+ *
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
@@ -146,15 +146,15 @@ struct netif {
   ip_addr_t gw;
 
   /** This function is called by the network device driver
-   *  to pass a packet up the TCP/IP stack. ÏòIP²ãÊäÈëÊý¾Ý°ü*/
+   *  to pass a packet up the TCP/IP stack. ï¿½ï¿½IPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý°ï¿½*/
   netif_input_fn input;
   /** This function is called by the IP module when it wants
    *  to send a packet on the interface. This function typically
-   *  first resolves the hardware address, then sends the packet. ·¢ËÍIPÊý¾Ý°ü*/
+   *  first resolves the hardware address, then sends the packet. ï¿½ï¿½ï¿½ï¿½IPï¿½ï¿½ï¿½Ý°ï¿½*/
   netif_output_fn output;
   /** This function is called by the ARP module when it wants
    *  to send a packet on the interface. This function outputs
-   *  the pbuf as-is on the link medium. µ×²ãÊý¾Ý°ü·¢ËÍ*/
+   *  the pbuf as-is on the link medium. ï¿½×²ï¿½ï¿½ï¿½ï¿½Ý°ï¿½ï¿½ï¿½ï¿½ï¿½*/
   netif_linkoutput_fn linkoutput;
 #if LWIP_NETIF_STATUS_CALLBACK
   /** This function is called when the netif state is set to up or down
@@ -167,7 +167,7 @@ struct netif {
   netif_status_callback_fn link_callback;
 #endif /* LWIP_NETIF_LINK_CALLBACK */
   /** This field can be set by the device driver and could point
-   *  to state information for the device. ×ÔÓÉÉèÖÃ×Ö¶Î£¬±ÈÈçÖ¸Ïòµ×²ãÉè±¸Ïà¹ØÐÅÏ¢*/
+   *  to state information for the device. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶Î£ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½×²ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢*/
   void *state;
 #if LWIP_DHCP
   /** the DHCP client state information for this netif */
@@ -183,17 +183,17 @@ struct netif {
   /* the hostname for this netif, NULL is a valid value */
   char*  hostname;
 #endif /* LWIP_NETIF_HOSTNAME */
-  /** maximum transfer unit (in bytes) ¸Ã½Ó¿ÚÔÊÐíµÄ×î´óÊý¾Ý°ü³¤¶È£¬¶àÊÇ1500*/
+  /** maximum transfer unit (in bytes) ï¿½Ã½Ó¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý°ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½1500*/
   u16_t mtu;
-  /** number of bytes used in hwaddr¸Ã½Ó¿ÚÎïÀíµØÖ·³¤¶È */
+  /** number of bytes used in hwaddrï¿½Ã½Ó¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ */
   u8_t hwaddr_len;
-  /** link level hardware address of this interface ¸Ã½Ó¿ÚÎïÀíµØÖ·*/
+  /** link level hardware address of this interface ï¿½Ã½Ó¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·*/
   u8_t hwaddr[NETIF_MAX_HWADDR_LEN];
-  /** flags (see NETIF_FLAG_ above) ¸Ã½Ó¿Ú×´Ì¬¡¢ÊôÐÔ×Ö¶Î*/
+  /** flags (see NETIF_FLAG_ above) ï¿½Ã½Ó¿ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½*/
   u8_t flags;
-  /** descriptive abbreviation ¸Ã½Ó¿ÚµÄÃû×Ö*/
+  /** descriptive abbreviation ï¿½Ã½Ó¿Úµï¿½ï¿½ï¿½ï¿½ï¿½*/
   char name[2];
-  /** number of this interface ¸Ã½Ó¿ÚµÄ±àºÅ*/
+  /** number of this interface ï¿½Ã½Ó¿ÚµÄ±ï¿½ï¿½ï¿½*/
   u8_t num;
 #if LWIP_SNMP
   /** link type (from "snmp_ifType" enum from snmp.h) */
@@ -221,13 +221,16 @@ struct netif {
   u8_t *addr_hint;
 #endif /* LWIP_NETIF_HWADDRHINT */
 #if ENABLE_LOOPBACK
-  /* List of packets to be queued for ourselves. Ö¸Ïò·¢ËÍ¸ø×Ô¼ºµÄÊý¾Ý°üµÄpbuf*/
-  struct pbuf *loop_first;//µÚÒ»¸ö
-  struct pbuf *loop_last;//×îºóÒ»¸ö
+  /* List of packets to be queued for ourselves. Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý°ï¿½ï¿½ï¿½pbuf*/
+  struct pbuf *loop_first;//ï¿½ï¿½Ò»ï¿½ï¿½
+  struct pbuf *loop_last;//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
 #if LWIP_LOOPBACK_MAX_PBUFS
   u16_t loop_cnt_current;
 #endif /* LWIP_LOOPBACK_MAX_PBUFS */
 #endif /* ENABLE_LOOPBACK */
+#if IP_NAPT
+  u8_t napt;
+#endif
 };
 
 #if LWIP_SNMP
@@ -288,7 +291,7 @@ void netif_set_status_callback(struct netif *netif, netif_status_callback_fn sta
 
 void netif_set_link_up(struct netif *netif)ICACHE_FLASH_ATTR;
 void netif_set_link_down(struct netif *netif)ICACHE_FLASH_ATTR;
-/** Ask if a link is up */ 
+/** Ask if a link is up */
 #define netif_is_link_up(netif) (((netif)->flags & NETIF_FLAG_LINK_UP) ? (u8_t)1 : (u8_t)0)
 
 #if LWIP_NETIF_LINK_CALLBACK
